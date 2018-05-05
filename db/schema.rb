@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_04_013353) do
+ActiveRecord::Schema.define(version: 2018_05_05_195639) do
 
   create_table "companies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "cnpj"
@@ -23,9 +23,10 @@ ActiveRecord::Schema.define(version: 2018_05_04_013353) do
   create_table "people", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "cpf"
     t.string "name"
-    t.string "birthdate"
+    t.date "birthdate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cpf"], name: "index_people_on_cpf", unique: true
   end
 
 end
