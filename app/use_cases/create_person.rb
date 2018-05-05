@@ -1,6 +1,4 @@
 class CreatePerson
-  class CreatePersonException < StandardError; end
-
   def initialize(resource: ::Person)
     @resource = resource
   end
@@ -8,9 +6,8 @@ class CreatePerson
   def register!(cpf:, name:, birthdate:)
     instance = build_resource(cpf: cpf, name: name, birthdate: birthdate)
     instance.save!
-  rescue => e
-    Rails.logger.error({ message: e.message, class: e.class, method: "CreatePerson#Register" })
-    raise CreatePersonException.new(e.message)
+  rescue ActiveRecord::RecordInvalid => e
+    raise GenericErrors::InvalidAttributesException.new(e.message)
   end
 
   private
@@ -19,7 +16,7 @@ class CreatePerson
     resource.new.tap do |instance|
       instance.cpf = cpf
       instance.name = name
-      instance.birthdate = birthdate
+      instance.birthdate = Date.strptime(birthdate, '%d/%m/%Y')
     end
   end
 
