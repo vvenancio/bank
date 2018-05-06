@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CreatePerson do
-  describe '#register!' do
+  describe '#create!' do
     context 'when success' do
       let(:attributes) do
         {
@@ -11,7 +11,7 @@ RSpec.describe CreatePerson do
         }
       end
 
-      subject { described_class.new.register!(attributes) }
+      subject { described_class.new.create!(attributes) }
 
       it 'creates new resource' do
         expect { subject }.to change(Person, :count).by(1)
@@ -27,7 +27,7 @@ RSpec.describe CreatePerson do
         }
       end
 
-      subject { described_class.new.register!(attributes) }
+      subject { described_class.new.create!(attributes) }
 
       it 'creates new resource' do
         expect { subject }.to raise_error(CreatePerson::InvalidAttributes)

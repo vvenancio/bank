@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :person do
-    cpf 42538111242
+    cpf '425.381.112-42'
     name Faker::Name.name
-    birthdate Date.today
+    birthdate '05/06/2018'
   end
 end
