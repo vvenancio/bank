@@ -19,21 +19,18 @@ RSpec.describe CreatePerson do
     end
 
     context 'when failure' do
-      let(:person_spy) { spy 'Person' }
-      let(:use_case) { described_class.new(resource: spy) }
-
       let(:attributes) do
         {
           cpf: nil,
-          birthdate: '29-01-1223',
+          birthdate: '29/01/1223',
           name: Faker::Name.name
         }
       end
 
-      subject { use_case.register!(attributes) }
+      subject { described_class.new.register!(attributes) }
 
       it 'creates new resource' do
-        expect { subject }.to raise_error(CreatePerson::InvalidArgument)
+        expect { subject }.to raise_error(CreatePerson::InvalidAttributes)
       end
     end
   end
