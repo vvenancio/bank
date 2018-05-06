@@ -1,23 +1,49 @@
 module Api
   module V1
     class PeopleController < Api::V1::BaseController
+      before_action :strip_cpf, except: :create
+      before_action :find_person, except: :create
+
       def create
-        use_case.execute!(user_params)
-        head :no_content
+        use_case.execute!(person_params)
+        render json: { message: 'Person created!' }, status: :created
       rescue CreatePerson::InvalidAttributes => e
         raise RequestErrors::UnprocessableEntity.new(e.message)
-      rescue CreatePerson::InvalidArgument => e
-        raise RequestErrors::BadRequest.new(e.message)
+      end
+
+      def update
+        if @person.update(person_params)
+          render json: { message: 'Person updated!' }, status: :ok
+        else
+          render json: {}, status: :bad_request
+        end
+      end
+
+      def show
+        render json: @person, status: :ok
+      end
+
+      def destroy
+        @person.destroy
+        render json: { message: 'Person deleted!' }, status: :ok
       end
 
       private
 
-      def user_params
-        params.require(:payload).permit(:name, :birthdate, :cpf)
+      def person_params
+        params.require(:person).permit(:name, :birthdate, :cpf)
       end
 
       def use_case
         CreatePerson.new
+      end
+
+      def strip_cpf
+        params[:cpf] && params[:cpf].gsub!(/[.-]/, '')
+      end
+
+      def find_person
+        @person = Person.find(params[:id])
       end
     end
   end
