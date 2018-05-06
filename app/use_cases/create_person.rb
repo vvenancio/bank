@@ -1,4 +1,7 @@
 class CreatePerson
+  class InvalidAttributes < StandardError; end
+  class InvalidArgument < StandardError; end
+
   def initialize(resource: ::Person)
     @resource = resource
   end
@@ -7,17 +10,23 @@ class CreatePerson
     instance = build_resource(cpf: cpf, name: name, birthdate: birthdate)
     instance.save!
   rescue ActiveRecord::RecordInvalid => e
-    raise GenericErrors::InvalidAttributesException.new(e.message)
+    raise InvalidAttributes.new(e.message)
+  rescue ArgumentError => e
+    raise InvalidArgument.new(e.message)
   end
 
   private
 
   def build_resource(cpf:, name:, birthdate:)
     resource.new.tap do |instance|
-      instance.cpf = cpf
+      instance.cpf = strip(cpf)
       instance.name = name
       instance.birthdate = Date.strptime(birthdate, '%d/%m/%Y')
     end
+  end
+
+  def strip(cpf)
+    cpf && cpf.gsub(/[.-]/, '')
   end
 
   attr_accessor :resource
