@@ -5,6 +5,8 @@ class Person < ApplicationRecord
 
   validate :cpf_format
 
+  has_many :bank_accounts, as: :ownerable
+
   private
 
   def cpf_format

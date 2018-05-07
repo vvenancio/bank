@@ -5,6 +5,8 @@ class Company < ApplicationRecord
 
   validate :cnpj_format
 
+  has_many :bank_accounts, as: :ownerable
+
   private
 
   def cnpj_format
