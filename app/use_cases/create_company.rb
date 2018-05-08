@@ -12,13 +12,13 @@ class CreateCompany
 
   def build_company(cnpj:, name:, trade:)
     Company.new.tap do |person|
-      person.cnpj = cnpj
+      person.cnpj = formatted_cnpj(cnpj)
       person.name = name
       person.trade = trade
     end
   end
 
-  def formatt_cnpj(cnpj)
+  def formatted_cnpj(cnpj)
     CNPJ.new(cnpj).formatted
   end
 end
