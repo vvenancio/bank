@@ -10,17 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_07_230720) do
+ActiveRecord::Schema.define(version: 2018_05_08_011234) do
 
   create_table "bank_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
-    t.integer "kind"
-    t.integer "status"
-    t.float "balance"
+    t.integer "kind", default: 0
+    t.integer "status", default: 0
+    t.float "balance", default: 0.0
     t.string "ownerable_type"
     t.bigint "ownerable_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "ancestry"
+    t.index ["ancestry"], name: "index_bank_accounts_on_ancestry"
     t.index ["ownerable_type", "ownerable_id"], name: "index_bank_accounts_on_ownerable_type_and_ownerable_id"
   end
 
