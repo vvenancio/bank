@@ -17,4 +17,8 @@ class CreateCompany
       person.trade = trade
     end
   end
+
+  def formatt_cnpj(cnpj)
+    CNPJ.new(cnpj).formatted
+  end
 end

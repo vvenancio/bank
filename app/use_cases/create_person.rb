@@ -12,9 +12,13 @@ class CreatePerson
 
   def build_person(cpf:, name:, birthdate:)
     Person.new.tap do |instance|
-      instance.cpf = cpf
+      instance.cpf = formatted_cpf(cpf)
       instance.name = name
       instance.birthdate = Date.strptime(birthdate, '%d/%m/%Y')
     end
+  end
+
+  def formatted_cpf(cpf)
+    CPF.new(cpf).formatted
   end
 end
