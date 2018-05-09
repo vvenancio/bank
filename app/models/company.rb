@@ -5,7 +5,7 @@ class Company < ApplicationRecord
 
   validate :cnpj_format
 
-  has_many :bank_accounts, as: :ownerable
+  has_many :bank_accounts, as: :ownerable, dependent: :destroy
 
   private
 
