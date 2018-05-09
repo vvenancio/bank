@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_08_011234) do
+ActiveRecord::Schema.define(version: 2018_05_09_014051) do
 
   create_table "bank_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -24,6 +24,16 @@ ActiveRecord::Schema.define(version: 2018_05_08_011234) do
     t.string "ancestry"
     t.index ["ancestry"], name: "index_bank_accounts_on_ancestry"
     t.index ["ownerable_type", "ownerable_id"], name: "index_bank_accounts_on_ownerable_type_and_ownerable_id"
+  end
+
+  create_table "bank_statements", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "operation"
+    t.string "code"
+    t.float "value"
+    t.bigint "bank_account_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_account_id"], name: "index_bank_statements_on_bank_account_id"
   end
 
   create_table "companies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -44,4 +54,5 @@ ActiveRecord::Schema.define(version: 2018_05_08_011234) do
     t.index ["cpf"], name: "index_people_on_cpf", unique: true
   end
 
+  add_foreign_key "bank_statements", "bank_accounts"
 end

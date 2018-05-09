@@ -110,5 +110,15 @@ RSpec.describe Api::V1::BankAccountsController, type: :controller do
         expect(response.status).to eq 400
       end
     end
+
+    context 'when account is not active' do
+      let(:account) { create(:bank_account, status: :revoked) }
+
+      before { post :deposit, params: { id: account.id, value: 50 } }
+
+      it 'returns forbidden' do
+        expect(response.status).to eq 403
+      end
+    end
   end
 end

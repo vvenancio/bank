@@ -27,6 +27,7 @@ module Api
       end
 
       def deposit
+        raise RequestErrors::Forbidden.new('Account should be active to receive some deposit!') unless @bank_account.active?
         raise RequestErrors::BadRequest.new('Deposit value must be provided!') if params[:value].blank?
         value = BigDecimal.new(params[:value])
         @bank_account.balance += value
