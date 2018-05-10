@@ -29,7 +29,7 @@ RSpec.describe CreatePerson do
 
       subject { described_class.new.create!(attributes) }
 
-      it 'creates new resource' do
+      it 'does not create new resource' do
         expect { subject }.to raise_error(CreatePerson::InvalidAttributes)
       end
     end

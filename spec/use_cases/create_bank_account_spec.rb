@@ -98,7 +98,7 @@ RSpec.describe CreateBankAccount do
 
       subject { described_class.new.create!(attributes) }
 
-      it 'creates new resource' do
+      it 'does not creates new resource' do
         expect { subject }.to raise_error(CreateCompany::InvalidAttributes)
       end
     end
