@@ -1,3 +1,6 @@
+# TODO: Quando for fazer um estorno, chamar o método de transfrência,
+# referênciando as contas de maneira inversa, e passando o valor a ser transferido
+
 module Api
   module V1
     class BankAccountsController < Api::V1::BaseController
@@ -27,12 +30,12 @@ module Api
       end
 
       def deposit
-        raise RequestErrors::Forbidden.new('Account should be active to receive some deposit!') unless @bank_account.active?
-        raise RequestErrors::BadRequest.new('Deposit value must be provided!') if params[:value].blank?
-        value = BigDecimal.new(params[:value])
-        @bank_account.balance += value
-        @bank_account.save!
+        deposit_use_case.deposit!(bank_account_id: @bank_account.id, value: params[:value])
         head :no_content
+      rescue Deposit::NotAllowedTo => e
+        raise RequestErrors::Forbidden.new(e.message)
+      rescue Deposit::AttributeMissing => e
+        raise RequestErrors::BadRequest.new(e.message)
       end
 
       private
@@ -47,6 +50,10 @@ module Api
 
       def use_case
         CreateBankAccount.new
+      end
+
+      def deposit_use_case
+        Deposit.new
       end
 
       def find_bank_account

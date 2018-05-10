@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_09_014051) do
+ActiveRecord::Schema.define(version: 2018_05_10_005458) do
 
   create_table "bank_accounts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
@@ -43,6 +43,18 @@ ActiveRecord::Schema.define(version: 2018_05_09_014051) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cnpj"], name: "index_companies_on_cnpj", unique: true
+  end
+
+  create_table "histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "from_account_id"
+    t.bigint "to_account_id", null: false
+    t.integer "kind", default: 0
+    t.float "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "token"
+    t.index ["from_account_id"], name: "index_histories_on_from_account_id"
+    t.index ["to_account_id"], name: "index_histories_on_to_account_id"
   end
 
   create_table "people", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
