@@ -1,11 +1,7 @@
 module Accounts
-  class Deposit
+  class Deposit < Accounts::Base
     class NotAllowedTo < StandardError; end
     class AttributeMissing < StandardError; end
-
-    def initialize(history_use_case: CreateHistory.new)
-      @history_use_case = history_use_case
-    end
 
     def deposit!(bank_account_id:, value:)
       raise attribute_missing_exception if value.blank?
@@ -18,8 +14,6 @@ module Accounts
     end
 
     private
-
-    attr_reader :history_use_case
 
     def add_money!(bank_account:, money:)
       raise not_allowed_to_exception unless bank_account.active?

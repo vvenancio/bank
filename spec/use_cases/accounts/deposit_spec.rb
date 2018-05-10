@@ -4,7 +4,7 @@ RSpec.describe Accounts::Deposit do
   let(:bank_account) { create(:bank_account) }
   let(:use_case) { described_class.new }
 
-  describe '#deposit' do
+  describe '#deposit!' do
     context 'when value is provided' do
       before { use_case.deposit!(bank_account_id: bank_account.id, value: 1000.95) }
 
