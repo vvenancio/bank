@@ -32,9 +32,9 @@ module Api
       def deposit
         deposit_use_case.deposit!(bank_account_id: @bank_account.id, value: params[:value])
         head :no_content
-      rescue Deposit::NotAllowedTo => e
+      rescue Accounts::Deposit::NotAllowedTo => e
         raise RequestErrors::Forbidden.new(e.message)
-      rescue Deposit::AttributeMissing => e
+      rescue Accounts::Deposit::AttributeMissing => e
         raise RequestErrors::BadRequest.new(e.message)
       end
 
@@ -53,7 +53,7 @@ module Api
       end
 
       def deposit_use_case
-        Deposit.new
+        Accounts::Deposit.new
       end
 
       def find_bank_account

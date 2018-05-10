@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Deposit do
+RSpec.describe Accounts::Deposit do
   let(:bank_account) { create(:bank_account) }
   let(:use_case) { described_class.new }
 
@@ -24,7 +24,7 @@ RSpec.describe Deposit do
       it 'raises AttributeMissing' do
         expect {
           use_case.deposit!(bank_account_id: bank_account.id, value: nil)
-        }.to raise_error(Deposit::AttributeMissing)
+        }.to raise_error(Accounts::Deposit::AttributeMissing)
       end
     end
 
@@ -34,7 +34,7 @@ RSpec.describe Deposit do
       it 'raises NotAllowedTo' do
         expect {
           use_case.deposit!(bank_account_id: account.id, value: 50)
-        }.to raise_error(Deposit::NotAllowedTo)
+        }.to raise_error(Accounts::Deposit::NotAllowedTo)
       end
     end
   end
