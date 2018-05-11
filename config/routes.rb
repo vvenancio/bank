@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
       post 'bank_account/:id/deposit' => 'bank_accounts#deposit'
       post 'bank_account/:from_account_id/transfer/:to_account_id' => 'bank_accounts#transfer'
+      post 'bank_account/reverse_debit' => 'bank_accounts#reverse_debit'
     end
   end
 end

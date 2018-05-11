@@ -1,11 +1,8 @@
-# TODO: Quando for fazer um estorno, chamar o método de transfrência,
-# referênciando as contas de maneira inversa, e passando o valor a ser transferido
-
 module Api
   module V1
     class BankAccountsController < Api::V1::BaseController
       before_action :validate_parameter, only: :update
-      before_action :find_bank_account, except: [:create, :transfer]
+      before_action :find_bank_account, except: [:create, :transfer, :reverse_debit]
 
       def create
         account = use_case.create!(use_case_parameters)
@@ -50,6 +47,15 @@ module Api
         raise RequestErrors::BadRequest.new(e.message)
       end
 
+      def reverse_debit
+        reverse_debit_use_case.transfer!(token: params[:token])
+        head :no_content
+      rescue Accounts::ReverseDebit::NotFound => e
+        raise RequestErrors::NotFound.new(e.message)
+      rescue Accounts::ReverseDebit::Forbidden => e
+        raise RequestErrors::Forbidden.new(e.message)
+      end
+
       private
 
       def use_case_parameters
@@ -70,6 +76,10 @@ module Api
 
       def transference_use_case
         Accounts::Transfer.new
+      end
+
+      def reverse_debit_use_case
+        Accounts::ReverseDebit.new
       end
 
       def find_bank_account
