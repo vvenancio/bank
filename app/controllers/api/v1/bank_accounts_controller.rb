@@ -36,6 +36,8 @@ module Api
         render json: { token: history.token }, status: :ok
       rescue Accounts::Transfer::NotAllowedTo => e
         raise RequestErrors::Forbidden.new(e.message)
+      rescue BankAccount::InvalidOpperation => e
+        raise RequestErrors::UnprocessableEntity.new(e.message)
       end
 
       def deposit
