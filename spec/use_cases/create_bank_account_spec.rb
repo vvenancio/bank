@@ -86,21 +86,5 @@ RSpec.describe CreateBankAccount do
         expect(account.ownerable).to eq company
       end
     end
-
-    xcontext 'when failure' do
-      let(:attributes) do
-        {
-          cnpj: '',
-          trade: 'Mega ltda',
-          name: 'Mega'
-        }
-      end
-
-      subject { described_class.new.create!(attributes) }
-
-      it 'does not creates new resource' do
-        expect { subject }.to raise_error(CreateCompany::InvalidAttributes)
-      end
-    end
   end
 end

@@ -150,4 +150,55 @@ RSpec.describe Api::V1::BankAccountsController, type: :controller do
       end
     end
   end
+
+  describe '#reverse_debit' do
+    let(:reverse_debit_spy) { spy 'ReverseDebit' }
+    let(:token) { SecureRandom.hex(10) }
+
+    context 'when no failure' do
+      before do
+        allow(controller).to receive(:reverse_debit_use_case).and_return(reverse_debit_spy)
+        post :reverse_debit, params: { token: token }
+      end
+
+      it 'returns no_content' do
+        expect(response.status).to eq 204
+      end
+    end
+
+    context 'when token not found' do
+      before do
+        allow(controller).to receive(:reverse_debit_use_case).and_return(reverse_debit_spy)
+        allow(reverse_debit_spy).to receive(:transfer!).and_raise(Accounts::ReverseDebit::NotFound)
+        post :reverse_debit, params: { token: nil }
+      end
+
+      it 'returns not_found' do
+        expect(response.status).to eq 404
+      end
+    end
+
+    context 'when history not allowed for roll back' do
+      let(:from_account) { create(:bank_account) }
+      let(:to_account) { create(:bank_account) }
+
+      let(:history) do
+        create :history,
+               from_account: from_account,
+               to_account: to_account,
+               kind: :deposit,
+               value: 10
+      end
+
+      before do
+        allow(controller).to receive(:reverse_debit_use_case).and_return(reverse_debit_spy)
+        allow(reverse_debit_spy).to receive(:transfer!).and_raise(Accounts::ReverseDebit::Forbidden)
+        post :reverse_debit, params: { token: history.token }
+      end
+
+      it 'returns forbidden' do
+        expect(response.status).to eq 403
+      end
+    end
+  end
 end
