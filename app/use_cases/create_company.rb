@@ -4,6 +4,7 @@ class CreateCompany
   def create!(cnpj:, name:, trade:)
     company = build_company(cnpj: cnpj, name: name, trade: trade)
     company.save!
+    company.reload
   rescue ActiveRecord::RecordInvalid => e
     raise InvalidAttributes.new(e.message)
   end

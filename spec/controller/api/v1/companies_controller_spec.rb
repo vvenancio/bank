@@ -9,13 +9,14 @@ RSpec.describe Api::V1::CompaniesController, type: :controller do
 
     before do
       allow(controller).to receive(:use_case).and_return(spy_use_case)
+      allow(spy_use_case).to receive(:id).and_return(1)
       post :create, params: { company: attributes }
     end
 
     it 'returns created' do
-      body = JSON(response.body)['message']
+      body = JSON(response.body)['id']
       expect(response.status).to eq 201
-      expect(body).to eq 'Company created!'
+      expect(body).to eq 1
     end
 
     it 'receives correctly' do

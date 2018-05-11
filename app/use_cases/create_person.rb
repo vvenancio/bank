@@ -4,6 +4,7 @@ class CreatePerson
   def create!(cpf:, name:, birthdate:)
     person = build_person(cpf: cpf, name: name, birthdate: birthdate)
     person.save!
+    person.reload
   rescue ActiveRecord::RecordInvalid => e
     raise InvalidAttributes.new(e.message)
   end

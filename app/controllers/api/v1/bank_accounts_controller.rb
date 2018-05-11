@@ -4,13 +4,16 @@
 module Api
   module V1
     class BankAccountsController < Api::V1::BaseController
-      before_action :find_bank_account, except: :create
+      before_action :validate_parameter, only: :update
+      before_action :find_bank_account, except: [:create, :transfer]
 
       def create
-        use_case.create!(use_case_parameters)
-        render json: { message: 'Bank account created!' }, status: :created
-      rescue CreatePerson::InvalidAttributes => e
+        account = use_case.create!(use_case_parameters)
+        render json: { id: account.id }, status: :created
+      rescue CreateBankAccount::InvalidAttributes => e
         raise RequestErrors::UnprocessableEntity.new(e.message)
+      rescue CreateBankAccount::ResourceNotFound => e
+        raise RequestErrors::NotFound.new(e.message)
       end
 
       def show
@@ -27,6 +30,15 @@ module Api
       def destroy
         @bank_account.destroy
         render json: { message: 'Bank account deleted!' }, status: :ok
+      end
+
+      def transfer
+        from_account = BankAccount.find(params[:from_account_id])
+        to_account = BankAccount.find(params[:to_account_id])
+        history = transference_use_case.transfer!(from_account: from_account, to_account: to_account, value: params[:value])
+        render json: { token: history.token }, status: :ok
+      rescue Accounts::Transfer::NotAllowedTo => e
+        raise RequestErrors::Forbidden.new(e.message)
       end
 
       def deposit
@@ -56,8 +68,19 @@ module Api
         Accounts::Deposit.new
       end
 
+      def transference_use_case
+        Accounts::Transfer.new
+      end
+
       def find_bank_account
         @bank_account = BankAccount.find(params[:id])
+      end
+
+      def validate_parameter
+        status = params[:bank_account][:status]
+        if status.present? && BankAccount.statuses.exclude?(status)
+          raise RequestErrors::BadRequest.new('Status should be valid!')
+        end
       end
     end
   end

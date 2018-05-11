@@ -5,6 +5,7 @@ class CreateBankAccount
   def create!(owner:, name:, parent_id: nil)
     bank_account = build_bank_account(owner: owner, name: name, parent_id: parent_id)
     bank_account.save!
+    bank_account.reload
   rescue ActiveRecord::RecordInvalid => e
     raise InvalidAttributes.new(e.message)
   end

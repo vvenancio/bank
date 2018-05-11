@@ -18,8 +18,7 @@ module Accounts
     def add_money!(bank_account:, money:)
       raise not_allowed_to_exception unless bank_account.active?
       value = value_to_deposit(value: money)
-      bank_account.balance += value
-      bank_account.save!
+      bank_account.credit!(value)
     end
 
     def find_bank_account(bank_account_id:)

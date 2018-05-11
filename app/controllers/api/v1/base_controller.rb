@@ -5,6 +5,7 @@ module Api
       rescue_from RequestErrors::BadRequest, with: :bad_request
       rescue_from RequestErrors::UnprocessableEntity, with: :unprocessable_entity
       rescue_from RequestErrors::Forbidden, with: :forbidden
+      rescue_from RequestErrors::NotFound, with: :not_found
 
       protected
 
@@ -22,6 +23,10 @@ module Api
 
       def forbidden(exception)
         render json: { error: exception.message }, status: :forbidden
+      end
+
+      def not_found(exception)
+        render json: { error: exception.message }, status: :not_found
       end
     end
   end

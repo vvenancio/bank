@@ -4,6 +4,7 @@ class CreateHistory
   def of_deposit!(to_account_id:, value:)
     history = build_deposit_history(to_account_id: to_account_id, value: value)
     history.save!
+    history.reload
   rescue ActiveRecord::RecordInvalid => e
     raise InvalidAttributes.new(e.message)
   end
@@ -11,6 +12,7 @@ class CreateHistory
   def of_transfer!(from_account_id:, to_account_id:, value:)
     history = build_transfer_history(from_account_id: from_account_id, to_account_id: to_account_id, value: value)
     history.save!
+    history.reload
   rescue ActiveRecord::RecordInvalid => e
     raise InvalidAttributes.new(e.message)
   end

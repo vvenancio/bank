@@ -4,8 +4,8 @@ module Api
       before_action :find_company, except: :create
 
       def create
-        use_case.create!(use_case_parameters)
-        render json: { message: 'Company created!' }, status: :created
+        company = use_case.create!(use_case_parameters)
+        render json: { id: company.id }, status: :created
       rescue CreateCompany::InvalidAttributes => e
         raise RequestErrors::UnprocessableEntity.new(e.message)
       end

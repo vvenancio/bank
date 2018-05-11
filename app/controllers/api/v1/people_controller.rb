@@ -4,8 +4,8 @@ module Api
       before_action :find_person, except: :create
 
       def create
-        use_case.create!(use_case_parameters)
-        render json: { message: 'Person created!' }, status: :created
+        person = use_case.create!(use_case_parameters)
+        render json: { id: person.id }, status: :created
       rescue CreatePerson::InvalidAttributes => e
         raise RequestErrors::UnprocessableEntity.new(e.message)
       end

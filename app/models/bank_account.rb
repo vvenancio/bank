@@ -6,8 +6,8 @@ class BankAccount < ApplicationRecord
 
   belongs_to :ownerable, polymorphic: true
 
-  has_many :received_transactions, class_name: 'History', foreign_key: 'to_account_id'
-  has_many :transactions_made, class_name: 'History', foreign_key: 'from_account_id'
+  has_many :received_transactions, class_name: 'History', foreign_key: 'to_account_id', dependent: :destroy
+  has_many :transactions_made, class_name: 'History', foreign_key: 'from_account_id', dependent: :destroy
 
   has_ancestry
 
