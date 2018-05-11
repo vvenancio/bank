@@ -122,4 +122,32 @@ RSpec.describe Api::V1::BankAccountsController, type: :controller do
       end
     end
   end
+
+  describe '#transfer' do
+    let(:transfer_spy) { spy 'Transfer' }
+
+    context 'when no failure' do
+      before do
+        allow(controller).to receive(:transference_use_case).and_return(transfer_spy)
+        allow(transfer_spy).to receive(:token).and_return(SecureRandom.hex(10))
+        post :transfer, params: { from_account_id: bank_account.id, to_account_id: bank_account.id, value: 1000.95 }
+      end
+
+      it 'returns ok' do
+        expect(response.status).to eq 200
+      end
+    end
+
+    context 'when failure' do
+      before do
+        allow(controller).to receive(:transference_use_case).and_return(transfer_spy)
+        allow(transfer_spy).to receive(:transfer!).and_raise(Accounts::Transfer::NotAllowedTo)
+        post :transfer, params: { from_account_id: bank_account.id, to_account_id: bank_account.id, value: 1000.95 }
+      end
+
+      it 'returns forbidden' do
+        expect(response.status).to eq 403
+      end
+    end
+  end
 end
